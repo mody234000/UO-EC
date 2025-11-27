@@ -1,714 +1,627 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المرصد الحضري - قطاع التنمية الاقتصادية</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-        }
-
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #f8f9fa;
-            line-height: 1.6;
-        }
-
-        .section-title {
-            color: var(--primary-color);
-            border-right: 4px solid var(--secondary-color);
-            padding-right: 15px;
-            margin-bottom: 20px;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-        }
-
-        .stats-card {
-            transition: transform 0.3s;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stats-card .card-body {
-            padding: 1.5rem;
-        }
-
-        .stats-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        .stats-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .stats-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .table th {
-            font-weight: 600;
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .badge-status {
-            font-size: 0.8rem;
-            padding: 0.4em 0.6em;
-        }
-
-        .rating-stars {
-            color: #f39c12;
-            font-size: 1.1rem;
-        }
-
-        .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .modal-content {
-            border-radius: 10px;
-            border: none;
-        }
-
-        .indicator-detail-item {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .indicator-detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .indicator-detail-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .indicator-detail-value {
-            color: #555;
-        }
-
-        .form-select, .form-control {
-            text-align: right;
-        }
-
-        .pagination .page-link {
-            color: var(--primary-color);
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        @media (max-width: 768px) {
-            .stats-card .card-body {
-                padding: 1rem;
-            }
-            
-            .stats-value {
-                font-size: 1.5rem;
-            }
-            
-            .table-responsive {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- شريط التنقل -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-chart-line me-2"></i>
-                المرصد الحضري - التنمية الاقتصادية
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> الرئيسية</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#indicators"><i class="fas fa-chart-bar me-1"></i> المؤشرات</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#analysis"><i class="fas fa-analytics me-1"></i> التحليلات</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- قسم البطاقات الإحصائية -->
-    <section class="stats-section py-4">
-        <div class="container">
-            <h2 class="section-title mb-4">نظرة عامة على المؤشرات</h2>
-            <div class="row" id="stats-cards">
-                <!-- سيتم ملؤها بالبيانات -->
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم البحث والتصفية -->
-    <section class="filters-section py-3 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" id="search-input" class="form-control" placeholder="ابحث في المؤشرات...">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <select id="status-filter" class="form-select">
-                        <option value="">جميع حالات الإنتاج</option>
-                        <option value="تم الإنتاج">تم الإنتاج</option>
-                        <option value="يحتاج إلى مراجعة / عليه ملاحظات">يحتاج إلى مراجعة</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select id="rating-filter" class="form-select">
-                        <option value="">جميع التقييمات</option>
-                        <option value="5">☆☆☆☆☆ (5 نجوم)</option>
-                        <option value="4">☆☆☆☆ (4 نجوم)</option>
-                        <option value="3">☆☆☆ (3 نجوم)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- جدول المؤشرات -->
-    <section class="indicators-section py-5" id="indicators">
-        <div class="container">
-            <h2 class="section-title mb-4">مؤشرات التنمية الاقتصادية</h2>
-            <div class="table-responsive">
-                <table class="table table-striped table-hover" id="indicators-table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>كود المؤشر</th>
-                            <th>اسم المؤشر</th>
-                            <th>تعريف المؤشر</th>
-                            <th>طريقة الحساب</th>
-                            <th>وحدة القياس</th>
-                            <th>حالة الإنتاج</th>
-                            <th>التقييم</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="indicators-body">
-                        <!-- سيتم ملؤها بالبيانات -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div class="text-muted" id="results-count">عرض 0 من 0 نتيجة</div>
-                <nav>
-                    <ul class="pagination" id="pagination">
-                        <!-- سيتم إنشاء أرقام الصفحات هنا -->
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </section>
-
-    <!-- قسم التحليلات -->
-    <section class="analysis-section py-5 bg-light" id="analysis">
-        <div class="container">
-            <h2 class="section-title mb-4">تحليلات مرئية</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0"><i class="fas fa-chart-pie me-2"></i> توزيع المؤشرات حسب حالة الإنتاج</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="statusChart" height="250"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="card-title mb-0"><i class="fas fa-star me-2"></i> توزيع المؤشرات حسب التقييم</h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="ratingChart" height="250"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- نافذة تفاصيل المؤشر -->
-    <div class="modal fade" id="indicatorModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="modalTitle">تفاصيل المؤشر</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modalBody">
-                    <!-- سيتم ملؤها بالبيانات -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- التذييل -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>المرصد الحضري</h5>
-                    <p>منصة متكاملة لمؤشرات التنمية الاقتصادية</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p>جميع الحقوق محفوظة &copy; 2023</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <script>
-        // بيانات المؤشرات الكاملة
-        const indicatorsData = [
-            {
-                code: "EC-01",
-                name: "معدل فروع المصارف التجارية لكل 100,000 شخص بالغ و (ب) عدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ",
-                definition: "عدد فروع المصارف التجارية لكل، 100,000 شخص بالغ وعدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ",
-                calculationMethod: "عدد فروع المصارف التجارية لكل 100,000 شخص بالغ في السنة = (عدد المصارف التجارية / عدد السكان البالغين في نفس السنة) * 100,000<br>عدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ في السنة = (عدد أجهزة الصرف الآلي / عدد السكان البالغين في نفس السنة) * 100,000",
-                unit: "عدد",
-                references: "أهداف التنمية المستدامة (SDGs)",
-                dataSource: "نشرة إحصاءات الخدمات والبنك المركزي 2023م",
-                dataSourceType: "بيانات متاحة",
-                geographicalScope: "منطقة",
-                productionStatus: "تم الإنتاج",
-                rating: "☆☆☆☆☆",
-                notes: "",
-                englishName: "(a) Number of commercial bank branches per 100,000 adults and (b) Number of ATMs per 100,000 adults",
-                sector: "التنمية الإقتصادية"
-            },
-            {
-                code: "EC-03",
-                name: "معدل التضخم",
-                definition: "يقيس التضخم الزيادة في أسعار مجموعات السلع والخدمات خلال فترة زمنية معينة، وعادة ما تكون سنة واحدة. وعكس التضخم هو الانكماش، والذي يحدث عندما تزداد القوة الشرائية للنقود وتنخفض الأسعار.",
-                calculationMethod: "(الرقم القياسي للأسعار للسنة أو الفترة الحالية - الرقم القياسي للأسعار للسنة أو الفترة السابقة) ÷ الرقم القياسي للأسعار للسنة أو الفترة السابقة ) × 100.",
-                unit: "نسبة مئوية",
-                references: "المرصد الحضري الوطني (NUO)",
-                dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2020م - يونيو 2025م)",
-                dataSourceType: "بيانات متاحة",
-                geographicalScope: "منطقة",
-                productionStatus: "تم الإنتاج",
-                rating: "☆☆☆☆☆",
-                notes: "",
-                englishName: "Inflation rate",
-                sector: "التنمية الإقتصادية"
-            },
-            {
-                code: "EC-06",
-                name: "متوسط دخل الأسرة",
-                definition: "يشتمل متوسط دخل الأسرة على الدخل المكتسب من قبل الأسرة المتوسطة في المدينة. يتم حسابه عن طريق تقسيم الدخل المتاح لجميع الأسر (وفقًا لاستطلاعات الأسر) على عدد الأسر في المدينة.",
-                calculationMethod: "متوسط دخل الأسرة (Average Household Income) = مجموع دخول جميع الأسر / إجمالي عدد الأسر.",
-                unit: "ريال",
-                references: "إطار الرصد الحضري (UMF)",
-                dataSource: "مسح الدخل و الإنفاق الإستهلاكي للأسرة 2023 - الهيئة العامة للإحصاء",
-                dataSourceType: "بيانات متاحة",
-                geographicalScope: "منطقة",
-                productionStatus: "تم الإنتاج",
-                rating: "☆☆☆☆☆",
-                notes: "",
-                englishName: "average family income",
-                sector: "التنمية الإقتصادية"
-            },
-            // ... (أضف بقية البيانات هنا بنفس الطريقة)
-            // لأغراض العرض، سأضيف بعض المؤشرات الإضافية
-            {
-                code: "EC-13",
-                name: "التوزيع النسبي لعدد رؤوس الأغنام والماعز",
-                definition: "يعبر هذا المؤشر عن عدد رؤوس الأغنام والماعز التي تتوفر بمنطقة جازان",
-                calculationMethod: "إجمالي عدد رؤوس الأغنام والماعز بالمنطقة / إجمالي المملكة*100",
-                unit: "نسبة مئوية",
-                references: "وزارة الاقتصاد والتخطيط (MEP)",
-                dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
-                dataSourceType: "بيانات متاحة",
-                geographicalScope: "منطقة",
-                productionStatus: "تم الإنتاج",
-                rating: "☆☆☆☆☆",
-                notes: "",
-                englishName: "The relative distribution of the number of sheep and goats",
-                sector: "التنمية الإقتصادية"
-            },
-            {
-                code: "EC-15",
-                name: "عدد المنشآت الصغيرة والمتوسطة",
-                definition: "تعد متوسطة إذا تراوح عدد موظفيها بين (50- 250) موظفاً أو بلغت إيراداتها ما بين (40- 200) مليون. الصغيرة فهي التي يقل عدد موظفيها عن 50 موظفاً وتبلغ إيراداتها 40 مليوناً فأقل",
-                calculationMethod: "إجمالي عدد المنشآت الصغيرة والمتوسطة / إجمالي المنشآت * 100",
-                unit: "نسبة مئوية",
-                references: "وزارة الاقتصاد والتخطيط (MEP)",
-                dataSource: "الهيئة العامة للمنشآت الصغيرة والمتوسطة للربع الأول 2021م -2023م",
-                dataSourceType: "بيانات متاحة",
-                geographicalScope: "منطقة",
-                productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
-                rating: "☆☆☆☆☆",
-                notes: "اسم المؤشر في القاعدة غير مطابق لاسم المؤشر الذي تم انتاجه",
-                englishName: "Number of small and medium enterprises",
-                sector: "التنمية الإقتصادية"
-            }
-        ];
-
-        // المتغيرات العامة
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let filteredData = [...indicatorsData];
-
-        // تهيئة التطبيق عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-        });
-
-        // وظيفة تهيئة التطبيق
-        function initializeApp() {
-            renderStatsCards();
-            renderIndicatorsTable();
-            setupEventListeners();
-            renderCharts();
-        }
-
-        // عرض بطاقات الإحصائيات
-        function renderStatsCards() {
-            const statsContainer = document.getElementById('stats-cards');
-            
-            // حساب الإحصائيات
-            const totalIndicators = indicatorsData.length;
-            const producedIndicators = indicatorsData.filter(item => item.productionStatus === 'تم الإنتاج').length;
-            const reviewNeeded = indicatorsData.filter(item => item.productionStatus === 'يحتاج إلى مراجعة / عليه ملاحظات').length;
-            const highRating = indicatorsData.filter(item => item.rating === '☆☆☆☆☆').length;
-            
-            const stats = [
-                { title: 'إجمالي المؤشرات', value: totalIndicators, icon: 'fas fa-chart-bar', color: 'primary' },
-                { title: 'المؤشرات المنتجة', value: producedIndicators, icon: 'fas fa-check-circle', color: 'success' },
-                { title: 'تحتاج مراجعة', value: reviewNeeded, icon: 'fas fa-exclamation-triangle', color: 'warning' },
-                { title: 'ممتاز (5 نجوم)', value: highRating, icon: 'fas fa-star', color: 'info' }
-            ];
-            
-            let statsHTML = '';
-            stats.forEach(stat => {
-                statsHTML += `
-                    <div class="col-md-3 col-sm-6">
-                        <div class="card stats-card border-${stat.color}">
-                            <div class="card-body text-center">
-                                <div class="stats-icon text-${stat.color}">
-                                    <i class="${stat.icon}"></i>
-                                </div>
-                                <div class="stats-value text-${stat.color}">${stat.value}</div>
-                                <div class="stats-label">${stat.title}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            statsContainer.innerHTML = statsHTML;
-        }
-
-        // ... (أضف بقية دوال الجافاسكريبت هنا)
-        // لأغراض العرض، سأضيف الدوال الأساسية فقط
-
-        // عرض جدول المؤشرات
-        function renderIndicatorsTable() {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const currentData = filteredData.slice(startIndex, endIndex);
-            
-            const tableBody = document.getElementById('indicators-body');
-            let tableHTML = '';
-            
-            if (currentData.length === 0) {
-                tableHTML = `
-                    <tr>
-                        <td colspan="8" class="text-center py-4">
-                            <i class="fas fa-search fa-2x text-muted mb-2"></i>
-                            <p class="text-muted">لا توجد نتائج مطابقة لبحثك</p>
-                        </td>
-                    </tr>
-                `;
-            } else {
-                currentData.forEach(indicator => {
-                    tableHTML += `
-                        <tr>
-                            <td>${indicator.code}</td>
-                            <td>${indicator.name}</td>
-                            <td>${truncateText(indicator.definition, 50)}</td>
-                            <td>${truncateText(removeHtmlTags(indicator.calculationMethod), 50)}</td>
-                            <td>${indicator.unit}</td>
-                            <td><span class="badge ${getStatusBadgeClass(indicator.productionStatus)}">${indicator.productionStatus}</span></td>
-                            <td><span class="rating-stars">${indicator.rating}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary btn-action" onclick="showIndicatorDetails('${indicator.code}')">
-                                    <i class="fas fa-eye"></i> عرض
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-            
-            tableBody.innerHTML = tableHTML;
-            updatePagination();
-            updateResultsCount();
-        }
-
-        // إزالة وسوم HTML من النص
-        function removeHtmlTags(text) {
-            if (!text) return '';
-            return text.replace(/<[^>]*>/g, '');
-        }
-
-        // تقصير النص الطويل
-        function truncateText(text, maxLength) {
-            if (!text) return '';
-            const cleanText = removeHtmlTags(text);
-            if (cleanText.length <= maxLength) return cleanText;
-            return cleanText.substring(0, maxLength) + '...';
-        }
-
-        // الحصول على فئة Badge بناءً على حالة الإنتاج
-        function getStatusBadgeClass(status) {
-            switch(status) {
-                case 'تم الإنتاج':
-                    return 'bg-success';
-                case 'يحتاج إلى مراجعة / عليه ملاحظات':
-                    return 'bg-warning';
-                default:
-                    return 'bg-secondary';
-            }
-        }
-
-        // تحديث أرقام الصفحات
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            const paginationContainer = document.getElementById('pagination');
-            let paginationHTML = '';
-            
-            if (totalPages <= 1) {
-                paginationContainer.innerHTML = '';
-                return;
-            }
-            
-            // زر الصفحة السابقة
-            paginationHTML += `
-                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">السابق</a>
-                </li>
-            `;
-            
-            // أرقام الصفحات
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHTML += `
-                    <li class="page-item ${i === currentPage ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
-                    </li>
-                `;
-            }
-            
-            // زر الصفحة التالية
-            paginationHTML += `
-                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">التالي</a>
-                </li>
-            `;
-            
-            paginationContainer.innerHTML = paginationHTML;
-        }
-
-        // تغيير الصفحة
-        function changePage(page) {
-            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-            if (page < 1 || page > totalPages) return;
-            
-            currentPage = page;
-            renderIndicatorsTable();
-            
-            // التمرير إلى أعلى الجدول
-            document.getElementById('indicators').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // تحديث عدد النتائج
-        function updateResultsCount() {
-            const total = filteredData.length;
-            if (total === 0) {
-                document.getElementById('results-count').textContent = `عرض 0 من 0 نتيجة`;
-                return;
-            }
-            
-            const startIndex = (currentPage - 1) * itemsPerPage + 1;
-            const endIndex = Math.min(currentPage * itemsPerPage, total);
-            
-            document.getElementById('results-count').textContent = `عرض ${startIndex}-${endIndex} من ${total} نتيجة`;
-        }
-
-        // إعداد مستمعي الأحداث
-        function setupEventListeners() {
-            // البحث
-            document.getElementById('search-input').addEventListener('input', function() {
-                applyFilters();
-            });
-            
-            // تصفية حسب حالة الإنتاج
-            document.getElementById('status-filter').addEventListener('change', function() {
-                applyFilters();
-            });
-            
-            // تصفية حسب التقييم
-            document.getElementById('rating-filter').addEventListener('change', function() {
-                applyFilters();
-            });
-        }
-
-        // تطبيق الفلاتر
-        function applyFilters() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            const ratingFilter = document.getElementById('rating-filter').value;
-            
-            filteredData = indicatorsData.filter(indicator => {
-                // البحث
-                const matchesSearch = 
-                    indicator.code.toLowerCase().includes(searchTerm) ||
-                    indicator.name.toLowerCase().includes(searchTerm) ||
-                    (indicator.definition && indicator.definition.toLowerCase().includes(searchTerm)) ||
-                    (indicator.calculationMethod && removeHtmlTags(indicator.calculationMethod).toLowerCase().includes(searchTerm));
-                
-                // تصفية حسب الحالة
-                const matchesStatus = statusFilter === '' || indicator.productionStatus === statusFilter;
-                
-                // تصفية حسب التقييم
-                let matchesRating = true;
-                if (ratingFilter !== '') {
-                    const starCount = (indicator.rating || '').length;
-                    matchesRating = starCount.toString() === ratingFilter;
-                }
-                
-                return matchesSearch && matchesStatus && matchesRating;
-            });
-            
-            currentPage = 1;
-            renderIndicatorsTable();
-        }
-
-        // عرض تفاصيل المؤشر
-        function showIndicatorDetails(code) {
-            const indicator = indicatorsData.find(item => item.code === code);
-            if (!indicator) return;
-            
-            document.getElementById('modalTitle').textContent = `${indicator.code} - ${indicator.name}`;
-            
-            const modalBody = document.getElementById('modalBody');
-            modalBody.innerHTML = `
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">تعريف المؤشر:</div>
-                    <div class="indicator-detail-value">${indicator.definition || 'غير متوفر'}</div>
-                </div>
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">طريقة الحساب:</div>
-                    <div class="indicator-detail-value">${indicator.calculationMethod || 'غير متوفر'}</div>
-                </div>
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">وحدة القياس:</div>
-                    <div class="indicator-detail-value">${indicator.unit || 'غير متوفر'}</div>
-                </div>
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">المرجعيات:</div>
-                    <div class="indicator-detail-value">${indicator.references || 'غير متوفر'}</div>
-                </div>
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">مصدر البيانات:</div>
-                    <div class="indicator-detail-value">${indicator.dataSource || 'غير متوفر'}</div>
-                </div>
-                ${indicator.notes ? `
-                <div class="indicator-detail-item">
-                    <div class="indicator-detail-label">ملاحظات:</div>
-                    <div class="indicator-detail-value">${indicator.notes}</div>
-                </div>
-                ` : ''}
-            `;
-            
-            const modal = new bootstrap.Modal(document.getElementById('indicatorModal'));
-            modal.show();
-        }
-
-        // عرض المخططات
-        function renderCharts() {
-            // مخطط حالة الإنتاج
-            const statusCtx = document.getElementById('statusChart').getContext('2d');
-            const statusCounts = {};
-            
-            indicatorsData.forEach(item => {
-                const status = item.productionStatus || 'غير محدد';
-                statusCounts[status] = (statusCounts[status] || 0) + 1;
-            });
-            
-            if (window.statusChartInstance) {
-                window.statusChartInstance.destroy();
-            }
-            
-            window.statusChartInstance = new Chart(statusCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(statusCounts),
-                    datasets: [{
-                        data: Object.values(statusCounts),
-                        backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            rtl: true
-                        }
-                    }
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+// بيانات المؤشرات الكاملة
+const indicatorsData = [
+    {
+        code: "EC-01",
+        name: "معدل فروع المصارف التجارية لكل 100,000 شخص بالغ و (ب) عدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ",
+        definition: "عدد فروع المصارف التجارية لكل، 100,000 شخص بالغ وعدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ",
+        calculationMethod: "عدد فروع المصارف التجارية لكل 100,000 شخص بالغ في السنة = (عدد المصارف التجارية / عدد السكان البالغين في نفس السنة) * 100,000<br>عدد أجهزة الصرف الآلي لكل 100,000 شخص بالغ في السنة = (عدد أجهزة الصرف الآلي / عدد السكان البالغين في نفس السنة) * 100,000",
+        unit: "عدد",
+        references: "أهداف التنمية المستدامة (SDGs)",
+        dataSource: "نشرة إحصاءات الخدمات والبنك المركزي 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "(a) Number of commercial bank branches per 100,000 adults and (b) Number of ATMs per 100,000 adults",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-03",
+        name: "معدل التضخم",
+        definition: "يقيس التضخم الزيادة في أسعار مجموعات السلع والخدمات خلال فترة زمنية معينة، وعادة ما تكون سنة واحدة. وعكس التضخم هو الانكماش، والذي يحدث عندما تزداد القوة الشرائية للنقود وتنخفض الأسعار.",
+        calculationMethod: "(الرقم القياسي للأسعار للسنة أو الفترة الحالية - الرقم القياسي للأسعار للسنة أو الفترة السابقة) ÷ الرقم القياسي للأسعار للسنة أو الفترة السابقة ) × 100.",
+        unit: "نسبة مئوية",
+        references: "المرصد الحضري الوطني (NUO)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2020م - يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Inflation rate",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-06",
+        name: "متوسط دخل الأسرة",
+        definition: "يشتمل متوسط دخل الأسرة على الدخل المكتسب من قبل الأسرة المتوسطة في المدينة. يتم حسابه عن طريق تقسيم الدخل المتاح لجميع الأسر (وفقًا لاستطلاعات الأسر) على عدد الأسر في المدينة.",
+        calculationMethod: "متوسط دخل الأسرة (Average Household Income) = مجموع دخول جميع الأسر / إجمالي عدد الأسر.",
+        unit: "ريال",
+        references: "إطار الرصد الحضري (UMF)",
+        dataSource: "مسح الدخل و الإنفاق الإستهلاكي للأسرة 2023 - الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "average family income",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-13",
+        name: "التوزيع النسبي لعدد رؤوس الأغنام والماعز",
+        definition: "يعبر هذا المؤشر عن عدد رؤوس الأغنام والماعز التي تتوفر بمنطقة جازان",
+        calculationMethod: "إجمالي عدد رؤوس الأغنام والماعز بالمنطقة / إجمالي المملكة*100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "The relative distribution of the number of sheep and goats",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-15",
+        name: "عدد المنشآت الصغيرة والمتوسطة",
+        definition: "تعد متوسطة إذا تراوح عدد موظفيها بين (50- 250) موظفاً أو بلغت إيراداتها ما بين (40- 200) مليون. الصغيرة فهي التي يقل عدد موظفيها عن 50 موظفاً وتبلغ إيراداتها 40 مليوناً فأقل",
+        calculationMethod: "إجمالي عدد المنشآت الصغيرة والمتوسطة / إجمالي المنشآت * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للمنشآت الصغيرة والمتوسطة للربع الأول 2021م -2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "اسم المؤشر في القاعدة غير مطابق لاسم المؤشر الذي تم انتاجه",
+        englishName: "Number of small and medium enterprises",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-17",
+        name: "نسبة التغير في الرقم القياسي العام لأسعار المستهلك حسب المدن الرئيسية",
+        definition: "يوضح المؤشر نسبة التغير في الرقم القياسي العام لأسعار المستهلك حسب مدن المملكة الرئيسية",
+        calculationMethod: "(الرقم القياسي العام لأسعار المستهلك في السنة اللاحقة - الرقم القياسي العام لأسعار المستهلك في السنة السابقة) /الرقم القياسي العام لأسعار المستهلك في السنة السابقة *100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "تحتاج إلى إضافة البيانات الخام في ورقة البيانات المتاحة، وكذلك إضافة المعالجة التي تمت لإنتاج المؤشر",
+        englishName: "Percentage change in the overall consumer price index by major city",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-19",
+        name: "التوزيع النسبي لكمية إنتاج أزهار القطف المزروعة",
+        definition: "يعبر المؤشر عن نسبة كمية الإنتاج أزهار القطف المزروعة بمناطق المملكة",
+        calculationMethod: "كمية الإنتاج أزهار القطف المزروعة / إجمالي المملكة *100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "The relative distribution of the quantity of cut flower production cultivated",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-20",
+        name: "التوزيع النسبي للمساحة المزروعة بأزهار القطف",
+        definition: "يعبر المؤشر عن التوزيع النسبي لمساحة البيوت المحمية المزروعة بأزهار القطف حسب المحافظة/المنطقة",
+        calculationMethod: "إجمالي المساحة المزروعة بأزهار القطف (فدان) /إجمالي مساحة البيوت المحمية (فدان) *100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Relative distribution of the area planted with cut flowers",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-21",
+        name: "معدل انتاجية الفدان من الأعلاف (طن/فدان)",
+        definition: "يقيس المؤشر إنتاجية الفدان من محاصيل الأعلاف",
+        calculationMethod: "كمية الإنتاج من الأعلاف (طن) / إجمالي المساحة المزروعة بالأعلاف (فدان)",
+        unit: "(طن/فدان)",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Feed yield per acre (tons/acre)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-22",
+        name: "انتاجية الفدان من محاصيل الحبوب (طن/فدان)",
+        definition: "يقيس المؤشر إنتاجية الفدان من محاصيل الحبوب",
+        calculationMethod: "كمية الإنتاج من محاصيل الحبوب (طن) / إجمالي المساحة المزروعة بمحاصيل الحبوب (فدان)",
+        unit: "(طن/فدان)",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Grain crop yield per acre (tons/acre)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-23",
+        name: "التوزيع النسبي للمساحة المزروعة بمحصول الخضروات المكشوفة (الصيفية)",
+        definition: "يعبر المؤشر التوزيع النسبي للمساحة المزروعة بمحصول الخضروات المكشوفة (الصيفية) بالمنطقة الي اجمالي المملكة",
+        calculationMethod: "إجمالي المساحة المزروعة بمحصول الخضروات الصيفية (يالمنطقة) / إجمالي المساحة المزروعة بمحصول الخضروات الصيفية (بالمملكة)* 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "The relative distribution of the area cultivated with open-field (summer) vegetable crops",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-24",
+        name: "انتاجية الفدان من محصول الخضروات المكشوفة (الصيفية) (طن/فدان)",
+        definition: "يقيس المؤشر إنتاجية الفدان من محصول الخضروات المكشوفة (الصيفية)",
+        calculationMethod: "إجمالي كمية الإنتاج من محصول الخضروات المكشوفة (الصيفية) (طن) / إجمالي المساحة المزروعة بمحصول الخضروات المكشوفة (الصيفية) (فدان)",
+        unit: "(طن/فдан)",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Yield per acre of open-field (summer) vegetable crop (tons/acre)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-25",
+        name: "إنتاجية الفدان من محاصيل الحبوب والأعلاف (طن/فدان)",
+        definition: "تعتبر الحبوب العلفية المنتجةمن المنتجات غذائية ثانوية تعتمد عليها صناعة الأعلاف بأكملها في تغذية الماشية والحيوانات المستأنسة.",
+        calculationMethod: "إجمالي عدد المحاصيل الحبوب والاعلاف بالطن / إجمالي المساحة المزروعة بمحاصيل الحبوب والاعلاف بالفدان",
+        unit: "(طن/فدان)",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Yield per acre of grain and fodder crops (tons/acre)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-31",
+        name: "تكلفة المعيشة",
+        definition: "تشير تكلفة المعيشة إلى المبلغ اللازم لتغطية الضروريات الأساسية، كالسكن والغذاء والضرائب والرعاية الصحية، .... ألخ بمنطقة جازان، في سنة معينة",
+        calculationMethod: "تحدد معظم المؤشرات تكلفة المعيشة الأساسية، والتي غالبًا ما يتم تمثيلها بـ 100",
+        unit: "نسبة مئوية",
+        references: "المجلس العالمي لبيانات المدن (WCCD)",
+        dataSource: "مسح الدخل و الإنفاق الإستهلاكي للأسرة 2023 - الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "يجتاج إلى مراجعة لأن اسم المؤشر لا يتطابق مع ما تم انتاجه، وكذلك لا يتطابق مع تعريف المؤشر أو وحدة قياسه",
+        englishName: "Cost of living",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-35",
+        name: "نسبة التغير في الإنفاق على الخدمات الترفيهية والثقافية بمدن المملكة",
+        definition: "يعبر المؤشر عن نسبة الزيادة او النقصان في إنفاق الأسرة السنوي على الخدمات الترفيهية والثقافية",
+        calculationMethod: "(قيمة إنفاق الأسرة السنوي علي الخدمات الترفيهية والثقافية في السنة اللاحقة - قيمة إنفاق الأسرة السنوي علي الخدمات الترفيهية والثقافية في السنة السابقة) / قيمة إنفاق الأسرة السنوي علي الخدمات الترفيهية والثقافية في السنة السابقة) * 100",
+        unit: "نسبة مئوية",
+        references: "جودة الحياة (QoL)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in spending on recreational and cultural services in the cities of the Kingdom",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-39",
+        name: "التوزيع النسبي للمساحة المحصودة من الأعلاف",
+        definition: "يعبر المؤشر عن التوزيع النسبي للمساحة المحصودة من الأعلاف حسب المحافظة/المنطقة",
+        calculationMethod: "إجمالي المساحة المحصودة من الأعلاف (فدان) / إجمالي المساحة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Relative distribution of harvested fodder area",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-40",
+        name: "التوزيع النسبي للمساحة المزروعة بمحاصيل الحبوب",
+        definition: "يعبر المؤشر عن التوزيع النسبي للمساحة المزروعة بمحاصيل الحبوب حسب المحافظة/المنطقة",
+        calculationMethod: "إجمالي المساحة المزروعة بمحاصيل الحبوب (فدان) / إجمالي المساحة (فدان)*100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Relative distribution of the area cultivated with grain crops",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-41",
+        name: "نسبة المساحة التي لم يتم حصدها من المساحة المزروعة بمحصولات الحبوب",
+        definition: "يعبر المؤشر عن نسبة المساحة التي لم يتم حصدها من المساحة المزروعة بمحصولات الحبوب",
+        calculationMethod: "إجمالي المساحة التي لم يتم حصدها المزروعة بمحاصيل الحبوب (فدان) / إجمالي المساحة المزروعة بمحاصيل الحبوب (فدان) مضروباً في 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage of unharvested land from the area planted with grain crops",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-42",
+        name: "التوزيع النسبي لإنتاج البيض (بالطن)",
+        definition: "يعبر هذا المؤشر عن الكمية المنتجة من البيض بالطن",
+        calculationMethod: "إجمالي إنتاج البيض (طن) بالمنطقة / إجمالي المملكة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Relative distribution of egg production (in tons)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-43",
+        name: "حجم الصيد السمكي (بالطن)",
+        definition: "يعبر هذا المؤشر عن الكمية المنتجة من السمك بالطن",
+        calculationMethod: "إجمالي إنتاجية السمك (طن) بالمنطقة / إجمالي المملكة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "إحصاءات الصيد البحري وتربية المائيات - الهيئة العامة للإحصاء 2024م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Fish catch volume (in tons)",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-44",
+        name: "نسبة التغير في عدد المنشآت الكبيرة",
+        definition: "المنشأة تصنف كبيرة إذا زاد عدد موظفيها على 250 موظفاً أو تجاوزت إيراداتها 200 مليون ريال",
+        calculationMethod: "إجمالي عدد المنشآت الكبيرة / إجمالي المنشآت * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للمنشآت الصغيرة والمتوسطة للربع الأول 2021م -2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "مصدر البيانات يحتاج إلى مراجعة لأن المصدر المذكور هو الهيئة العامة للمنشآت الصغيرة والمتوسطة والمؤشر يتحدث عن المنشآت الكبيرة",
+        englishName: "Percentage change in the number of large establishments",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-45",
+        name: "نسبة التغير في عدد المنشآت متناهية الصغر",
+        definition: "تعتبر المنشأة المتناهية الصغر هي التي تضم عمالة من ١-٥ أو بمبيعات لا تزيد عن ٣ ملايين ريال.",
+        calculationMethod: "إجمالي عدد المنشآت متناهية الصغر / إجمالي المنشآت * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للمنشآت الصغيرة والمتوسطة للربع الأول 2021م -2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in the number of micro-enterprises",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-46",
+        name: "عدد رؤوس الأبقار",
+        definition: "يعبر هذا المؤشر عن عدد رؤوس الأبقار التي تتواجد بمنطقة جازان",
+        calculationMethod: "إجمالي عدد رؤوس الأبقار بالمنطقة / إجمالي المملكة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Number of cows",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-47",
+        name: "التوزيع النسبي لعدد رؤوس الإبل",
+        definition: "يعبر هذا المؤشر عن عدد رؤوس الأبل التي تتواجد بمنطقة جازان",
+        calculationMethod: "إجمالي عدد رؤوس الأبل بالمنطقة / إجمالي المملكة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Relative distribution of the number of camels",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-49",
+        name: "التوزيع النسبي لعدد رؤوس الدجاج",
+        definition: "يعبر هذا المؤشر عن عدد رؤوس الدجاج التي تمت تربيتها بمنطقة جازان",
+        calculationMethod: "إجمالي عدد رؤوس الدجاج بالمنطقة / إجمالي المملكة * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "The relative distribution of the number of chickens",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-50",
+        name: "متوسط الإنفاق الاستهلاكي الشهري للأسرة حسب المنطقة الإدارية والجنسية لرئيس الأسرة",
+        definition: "هو مؤشر يقيس متوسط الانفاق الاستهلاكي الشهري للأسر، وهو عبارة عن مجموع الانفاق الاستهلاكي الشهري للأسرة إلى إجمالي عدد الأسر .",
+        calculationMethod: "(مجموع الانفاق الاستهلاكي الشهري للأسرة / اجمالي عدد الأسر)",
+        unit: "ريال",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "مسح الدخل و الإنفاق الإستهلاكي للأسرة 2023 - الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Average monthly household consumption expenditure by administrative region and nationality of the head of household",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-51",
+        name: "نسبة الإنفاق الاستهلاكي الشهري للأسرة إلى الدخل",
+        definition: "يعبر المؤشر عن نسبة إنفاق الأسرة إلى الدخل كقيمة وسيطة بينهما( الدخل والإنفاق)",
+        calculationMethod: "وسيط انفاق الأسرة / وسيط الدخل *100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "مسح الدخل و الإنفاق الإستهلاكي للأسرة 2023 - الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "اسم المؤشر على الرسمة البيانية يحتاج إلى تعديل ليكون مطابق لاسم المؤشر في جدول البيانات",
+        englishName: "Ratio of monthly household consumption expenditure to income",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-52",
+        name: "نسبة التغير في الإنفاق على الكهرباء والغاز وأنواع الوقود الأخرى بمدن المملكة",
+        definition: "يعبر المؤشر عن نسبة الزيادة او النقصان في إنفاق الأسرة السنوي على الكهرباء والغاز وأنواع الوقود الأخرى",
+        calculationMethod: "(قيمة إنفاق الأسرة السنوي علي الكهرباء والغاز وأنواع الوقود الأخرى في السنة اللاحقة - قيمة إنفاق الأسرة السنوي علي الكهرباء والغاز وأنواع الوقود الأخرى في السنة السابقة) / قيمة إنفاق الأسرة السنوي علي الكهرباء والغاز وأنواع الوقود الأخرى في السنة السابقة) * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in spending on electricity, gas and other fuels in the cities of the Kingdom",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-53",
+        name: "نسبة التغير في الإنفاق على إمدادات المياه والخدمات المتنوعة المتصلة بالمساكن بمدن المملكة",
+        definition: "يعبر المؤشر عن نسبة الزيادة او النقصان في إنفاق الأسرة السنوي على إمدادات المياه والخدمات المتنوعة المتصلة بالمساكن",
+        calculationMethod: "(قيمة إنفاق الأسرة السنوي علي إمدادات المياه والخدمات المتنوعة المتصلة بالمسكن في السنة اللاحقة - قيمة إنفاق الأسرة السنوي علي إمدادات المياه والخدمات المتنوعة المتصلة بالمسكن في السنة السابقة) / قيمة إنفاق الأسرة السنوي علي إمدادات المياه والخدمات المتنوعة المتصلة بالمسكن في السنة في السنة السابقة) * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in spending on water supply and various housing-related services in the Kingdom's cities",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-54",
+        name: "نسبة التغير في إنفاق الأسرة على التعليم قبل الابتدائي والتعليم الابتدائي بمدن المملكة",
+        definition: "يعبر المؤشر عن نسبة الزيادة او النقصان في إنفاق الأسرة السنوي على التعليم الابتدائي (الرسوم ومصروفات الدروس الخاصة)",
+        calculationMethod: "(قيمة إنفاق الأسرة السنوي علي التعليم الابتدائي في السنة اللاحقة - قيمة إنفاق الأسرة السنوي علي التعليم الابتدائي في السنة السابقة) / قيمة إنفاق الأسرة السنوي علي التعليم الابتدائي في السنة السابقة) * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in household spending on pre-primary and primary education in the cities of the Kingdom",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-55",
+        name: "نسبة التغير في إنفاق الأسرة على ايجار المسكن بمدن المملكة",
+        definition: "يعبر المؤشر عن نسبة الزيادة او النقصان في إنفاق الأسرة السنوي على ايجار المسكن",
+        calculationMethod: "(قيمة الانفاق السنوي علي ايجار المسكن في السنة اللاحقة - قيمة الانفاق السنوي علي ايجار المسكن في السنة السابقة) / قيمة الانفاق السنوي علي ايجار المسكن في السنة السابقة) * 100",
+        unit: "نسبة مئوية",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الرقم القياسي لأسعار المستهلك -الهيئة العامة للإحصاء (يونيو 2025م)",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Percentage change in household spending on housing rent in the cities of the Kingdom",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-56",
+        name: "نصيب الفرد من الماشية المذبوحة",
+        definition: "تعتبر مصدر رزق أساسي لكثير من العائلات، فهي توفر لهم دخلًا ثابتًا من خلال بيع اللحوم والألبان، بالإضافة إلى المنتجات الحيوانية الأخرى. في بعض المناطق، تعتمد الأسر الفقيرة بشكل كبير على هذا المصدر من الدخل",
+        calculationMethod: "إجمالي عدد الماشية المذبوحة / إجمالي السكان",
+        unit: "الماشية المذبوحة / فرد",
+        references: "وزارة الاقتصاد والتخطيط (MEP)",
+        dataSource: "الهيئة العامة للإحصاء - إحصاءات الثروة الحيوانية - المسح الزراعي الشامل لعام 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Per capita share of slaughtered livestock",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-62",
+        name: "معدل عدد منشآت الأعمال لكل 100,000 نسمة",
+        definition: "تشير منشآت الأعمال إلى الشركات أو المؤسسات. المؤسسة هي أصغر فئة من الوحدات الإعتبارية، أي أصغر وحدة تنظيمية تنتج سلعًا أو خدمات. وللحصول على بيانات عدد منشآت الأعمال، يتم الرجوع إلى السجل التجاري لمنشآت الأعمال.",
+        calculationMethod: "(عدد منشآت الاعمال ÷ إجمالي عدد السكان) × 100,000",
+        unit: "منشأة أعمال/100,000 نسمة",
+        references: "المجلس العالمي لبيانات المدن (WCCD)",
+        dataSource: "الهيئة العامة للمنشآت الصغيرة والمتوسطة للربع الأول 2021م -2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "تم الإنتاج",
+        rating: "☆☆☆☆☆",
+        notes: "",
+        englishName: "Number of business establishments per 100,000 inhabitants",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-63",
+        name: "نسبة الصيد السمكي من المصائد التقليدية في البحر الأحمر",
+        definition: "نسبة كمية الأسماك المصادة من المصائد التقليدية في البحر الأحمر من إجمالي الصيد فيه.",
+        calculationMethod: "(كمية الصيد التقليدي في البحر الأحمر / إجمالي الصيد في البحر الأحمر) × 100",
+        unit: "نسبة مئوية",
+        references: "منظمة الأغذية والزراعة (FAO)",
+        dataSource: "إحصاءات الصيد البحري وتربية المائيات - الهيئة العامة للإحصاء 2024م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Percentage of fish caught from traditional fisheries in the Red Sea",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-64",
+        name: "نسبة التغير السنوي في كمية المصيد من المصائد التقليدية بالبحر الأحمر والخليج العربي",
+        definition: "النسبة المئوية للتغير في كمية الصيد التقليدي بين سنة وأخرى.",
+        calculationMethod: "[(كمية المصيد السنة الحالية - كمية المصيد السنة السابقة) / كمية المصيد السنة السابقة] × 100",
+        unit: "نسبة مئوية",
+        references: "منظمة الأغذية والزراعة (FAO)",
+        dataSource: "إحصاءات الصيد البحري وتربية المائيات - الهيئة العامة للإحصاء 2024م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Annual change in catch volume from traditional fisheries in the Red Sea and the Arabian Gulf",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-65",
+        name: "التوزيع النسبي لأشجار النخيل",
+        definition: "نسبة أشجار النخيل في منطقة محددة من إجمالي أشجار النخيل في منطقة أكبر.",
+        calculationMethod: "(عدد أشجار النخيل في المنطقة المحددة / الإجمالي في المنطقة المرجعية) × 100",
+        unit: "نسبة مئوية",
+        references: "مؤشر محلي Local Indicator",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Relative distribution of palm trees",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-66",
+        name: "نسبة أشجار النخيل والمثمر",
+        definition: "نسبة أشجار النخيل والمثمرة من إجمالي عدد الأشجار في منطقة محددة.",
+        calculationMethod: "(عدد أشجار النخيل والمثمرة / إجمالي عدد الأشجار) × 100",
+        unit: "نسبة مئوية",
+        references: "مؤشر محلي Local Indicator",
+        dataSource: "المسح الزراعي الشامل 2023م- الهيئة العامة للإحصاء",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Percentage of palm and fruit trees",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-67",
+        name: "نسبة التغير السنوي في عدد العمالة بالمصانع المنتجة",
+        definition: "النسبة المئوية للتغير في عدد عمال المصانع بين نهاية سنة وأخرى.",
+        calculationMethod: "[(عدد العمالة نهاية السنة الحالية - عدد العمالة نهاية السنة السابقة) / عدد العمالة نهاية السنة السابقة] × 100",
+        unit: "نسبة مئوية",
+        references: "منظمة العمل الدولية (ILO)",
+        dataSource: "المركز الوطني للمعلومات الصناعية والتعدينة - نشرة التراخيص الصناعية 2023م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Annual change in the number of workers in manufacturing plants",
+        sector: "التنمية الإقتصادية"
+    },
+    {
+        code: "EC-68",
+        name: "نسبة التغير في الإنتاج بمشاريع الاستزراع السمكي بالمياه المالحة",
+        definition: "النسبة المئوية للتغير في إنتاج الاستزراع السمكي في المياه المالحة بين عامين.",
+        calculationMethod: "[(الإنتاج في سنة النهاية - الإنتاج في سنة البداية) / الإنتاج في سنة البداية] × 100",
+        unit: "نسبة مئوية",
+        references: "منظمة الأغذية والزراعة (FAO)",
+        dataSource: "إحصاءات الصيد البحري وتربية المائيات - الهيئة العامة للإحصاء 2024م",
+        dataSourceType: "بيانات متاحة",
+        geographicalScope: "منطقة",
+        productionStatus: "يحتاج إلى مراجعة / عليه ملاحظات",
+        rating: "☆☆☆☆☆",
+        notes: "البيانات الأساسية لبطاقة تعريف المؤشر غير متوفرة",
+        englishName: "Percentage change in production in saltwater aquaculture projects",
+        sector: "التنمية الإقتصادية"
+    }
+];
